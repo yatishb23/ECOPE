@@ -47,7 +47,8 @@ class ModelPredictor:
 
         try:
             # Load checkpoint
-            checkpoint = torch.load(model_path, map_location=self.device)
+            # Using weights_only=False for PyTorch 2.6 compatibility as checkpoint includes LabelEncoder and other objects
+            checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
             print("Checkpoint keys:", list(checkpoint.keys()))
 
             # Load label encoders

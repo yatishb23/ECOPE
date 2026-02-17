@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 from typing import Optional, List
 from pydantic import SecretStr
 from urllib.parse import quote_plus
-from pathlib import Path  # <-- import Path for absolute path
+from pathlib import Path 
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
@@ -28,8 +28,8 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: Optional[SecretStr] = None
     
     # ML Model Settings
-    # Make MODEL_PATH absolute relative to this settings file
-    MODEL_PATH: str = str(Path(__file__).parent / "ml" / "model.pt")
+    # Make MODEL_PATH absolute relative to the app root
+    MODEL_PATH: str = str(Path(__file__).parent.parent / "ml" / "model.pt")
     MODEL: str = 'distilbert-base-uncased'
     
     def _build_mysql_url(self) -> str:
