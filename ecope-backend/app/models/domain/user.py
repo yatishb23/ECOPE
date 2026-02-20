@@ -5,9 +5,9 @@ from app.db.database import Base
 
 
 class UserRole(str, enum.Enum):
-    STUDENT = "student"
-    STAFF = "staff"
     ADMIN = "admin"
+    EMPLOYEE = "employee"
+    SUPPORT = "support"
 
 
 class User(Base):
@@ -19,5 +19,5 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)                  
     full_name = Column(String(150), nullable=False)                        
 
-    role = Column(Enum(UserRole), default=UserRole.STUDENT)
+    role = Column(Enum(UserRole), default=UserRole.EMPLOYEE)
     is_active = Column(Boolean, default=True)

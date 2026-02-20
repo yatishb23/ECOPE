@@ -28,7 +28,6 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch all data in parallel with proper typing
         const [
           basicStatsRes, 
           timeTrendsRes, 
@@ -65,11 +64,13 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <Alert variant="destructive" className="mb-4">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>{error}</AlertDescription>
-      </Alert>
+      <div className="p-6">
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </div>
     );
   }
 
@@ -96,7 +97,7 @@ export default function Dashboard() {
         {/* Basic Stats Cards Section */}
         <BasicStatsDisplay stats={basicStats} loading={loading} />
 
-        {/* Main Dashboard Tabs - Full-width without surrounding card */}
+        {/* Main Dashboard Tabs */}
         <div>
           <Tabs defaultValue="categories" className="mt-2">
             <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
@@ -134,8 +135,8 @@ export default function Dashboard() {
         
         <div className="text-sm text-muted-foreground border-t dark:border-t-border/30 pt-4 bg-muted/10 dark:bg-muted/5 p-4 rounded-lg">
           <p>
-            This dashboard provides AI-powered analytics on SCOPE complaint data. The visualizations 
-            help identify patterns, trends, and insights to improve response and resolution strategies.
+            This dashboard provides AI-powered analytics on SCOPE complaint data. 
+            Patterns and trends are generated in real-time.
           </p>
         </div>
       </div>

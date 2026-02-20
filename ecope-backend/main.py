@@ -49,25 +49,25 @@ async def create_initial_users():
         )
         db.add(admin_user)
         
-        # Create staff user
-        staff_user = User(
-            email="staff@example.com",
-            hashed_password=get_password_hash("staffpassword"),  # Change in production
-            full_name="Staff User",
-            role=UserRole.STAFF,
+        # Create employee user
+        employee_user = User(
+            email="employee@example.com",
+            hashed_password=get_password_hash("employeepassword"),  # Change in production
+            full_name="Employee User",
+            role=UserRole.EMPLOYEE,
             is_active=True
         )
-        db.add(staff_user)
+        db.add(employee_user)
         
-        # Create student user
-        student_user = User(
-            email="student@example.com",
-            hashed_password=get_password_hash("studentpassword"),  # Change in production
-            full_name="Student User",
-            role=UserRole.STUDENT,
+        # Create support user
+        support_user = User(
+            email="support@example.com",
+            hashed_password=get_password_hash("supportpassword"),  # Change in production
+            full_name="Support User",
+            role=UserRole.SUPPORT,
             is_active=True
         )
-        db.add(student_user)
+        db.add(support_user)
         
         db.commit()
 

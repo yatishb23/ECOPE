@@ -7,7 +7,7 @@ export interface User {
   is_active: boolean;
 }
 
-export type UserRole = "admin" | "staff" | "student";
+export type UserRole = "admin" | "employee" | "support";
 
 // Complaint related types
 export interface Complaint {
@@ -23,16 +23,20 @@ export interface Complaint {
 }
 
 export type ComplaintCategory =
-  | "Academic"
+  | "Employee Experience"
   | "Facilities"
-  | "Housing"
+  | "Finance"
+  | "HR / Payroll"
+  | "HR / Workplace Culture"
+  | "Health & Safety"
   | "IT Support"
-  | "Financial Aid"
-  | "Campus Life"
-  | "Dining Services"
-  | "Other";
+  | "Management"
+  | "Office Supplies"
+  | "Security"
+  | "Workplace Culture"
+  | "Other" ;
 export type ComplaintUrgency = "Low" | "Medium" | "High" | "Critical";
-export type ComplaintStatus = "Open" | "In Progress" | "Resolved" | "Closed";
+export type ComplaintStatus = "Open" | "In Progress" | "Resolved" | "Closed" | "Pending";
 
 export interface ComplaintPrediction {
   category: ComplaintCategory;

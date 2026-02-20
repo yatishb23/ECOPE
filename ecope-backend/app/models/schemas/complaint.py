@@ -48,3 +48,5 @@ class ComplaintPrediction(BaseModel):
 class PaginatedComplaintsResponse(BaseModel):
     items: List[ComplaintResponse]
     total: int
+    page: int
+    size: int

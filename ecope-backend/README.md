@@ -128,8 +128,8 @@ Open your browser and navigate to http://localhost:8000/docs to view the Swagger
 ## Default Users
 
 - Admin: admin@example.com / adminpassword
-- Staff: staff@example.com / staffpassword
-- Student: student@example.com / studentpassword
+- Employee: employee@example.com / employeepassword
+- Support: support@example.com / supportpassword
 
 ## Future Enhancements
 

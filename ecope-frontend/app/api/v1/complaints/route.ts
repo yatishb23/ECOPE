@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     const urgency = searchParams.get('urgency');
     const status = searchParams.get('status');
     const search = searchParams.get('search');
+    const assigned_to = searchParams.get('assigned_to');
     
     // Build URL with query parameters if present
     let url = `${getBaseUrl()}/api/v1/complaints/`;
@@ -39,6 +40,9 @@ export async function GET(request: NextRequest) {
     }
     if (search) {
       queryParams.push(`search=${encodeURIComponent(search)}`);
+    }
+    if (assigned_to) {
+      queryParams.push(`assigned_to=${encodeURIComponent(assigned_to)}`);
     }
     
     if (queryParams.length > 0) {

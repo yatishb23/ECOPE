@@ -15,7 +15,8 @@ import {
   PanelLeftOpen,
   Sun,
   Moon,
-  Laptop
+  Laptop,
+  ClipboardList
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -80,6 +81,11 @@ export function Sidebar() {
       href: '/complaints',
       icon: <FileText size={18} />,
       label: 'Complaints',
+    },
+    {
+      href: '/allocations',
+      icon: <ClipboardList size={18} />,
+      label: 'Allocations',
     },
     {
       href: '/chat',

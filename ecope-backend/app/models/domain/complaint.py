@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Enum
+from sqlalchemy import Column, Integer, String, Text, DateTime, Enum, ForeignKey
 from sqlalchemy.sql import func
 import enum
 
@@ -32,6 +32,7 @@ class Complaint(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     complaint_text = Column(Text, nullable=False)
+    created_by = Column(String(255), nullable=True)  # Email of the user who created the complaint
 
     category = Column(Enum(Category), nullable=True)
     urgency = Column(Enum(Urgency), nullable=True)

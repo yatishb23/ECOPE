@@ -39,7 +39,7 @@ export function Navbar() {
       <div className="container max-w-7xl mx-auto px-6 sm:px-8 flex h-16 md:h-20 items-center justify-between">
         <div className="flex items-center gap-2">
           <Shield className="h-8 w-8 text-primary" />
-          <span className="text-xl font-bold tracking-tight">SCOPE</span>
+          <span className="text-xl font-bold tracking-tight">ECHO</span>
         </div>
         
         {/* Action buttons */}

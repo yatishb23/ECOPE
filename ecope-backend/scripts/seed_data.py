@@ -22,19 +22,24 @@ def seed_complaints_from_csv(db: Session, csv_path: str):
         
         # Map statuses
         statuses = ["Pending", "In Progress", "Resolved", "Closed"]
+        complaint_counter = 0
         
         for _, row in df.iterrows():
             # Map CSV category and urgency to enum values
             category = row.get('category')
             urgency = row.get('urgency')
             
+            # Use Round Robin for ALL complaints to assign to support personnel
+            complaint_counter += 1
+            assigned_to = f"it-support-{(complaint_counter - 1) % 10 + 1}@university.edu"
+
             # Create complaint instance
             complaint = Complaint(
                 complaint_text=row['complaint_text'],
                 category=category,
                 urgency=urgency,
                 status=random.choice(statuses),
-                assigned_to=None if random.random() > 0.7 else f"staff-{random.randint(1, 5)}@university.edu"
+                assigned_to=assigned_to
             )
             
             db.add(complaint)

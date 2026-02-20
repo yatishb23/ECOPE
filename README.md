@@ -204,8 +204,8 @@ Open your web browser and navigate to `http://localhost:3000`. You can log in us
 ## 🔑 Default Users
 
 *   **Admin:** `admin@example.com` / `adminpassword`
-*   **Staff:** `staff@example.com` / `staffpassword`
-*   **Student:** `student@example.com` / `studentpassword`
+*   **Employee:** `employee@example.com` / `employeepassword`
+*   **Support:** `support@example.com` / `supportpassword`
 
 *(Remember to change these default passwords in a production environment!)*
 

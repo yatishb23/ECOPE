@@ -77,7 +77,7 @@ export default function UsersPage() {
     email: '',
     full_name: '',
     password: '',
-    role: 'student',
+    role: 'employee',
     is_active: true
   });
   
@@ -85,7 +85,7 @@ export default function UsersPage() {
     email: '',
     full_name: '',
     password: '',
-    role: 'student',
+    role: 'employee',
     is_active: true
   });
   
@@ -143,7 +143,7 @@ export default function UsersPage() {
         email: '',
         full_name: '',
         password: '',
-        role: 'student',
+        role: 'employee',
         is_active: true
       });
       showToast('success', "User created", "The user has been successfully created");
@@ -163,7 +163,7 @@ export default function UsersPage() {
       email: user.email,
       full_name: user.full_name || '',
       password: '', // Don't include current password
-      role: (user.role as UserRole) || 'student',
+      role: (user.role as UserRole) || 'employee',
       is_active: user.is_active
     });
     setIsEditUserDialogOpen(true);
@@ -221,8 +221,8 @@ export default function UsersPage() {
   const getRoleBadgeColor = (role: string | null) => {
     switch (role) {
       case 'admin': return 'bg-red-500';
-      case 'staff': return 'bg-blue-500';
-      case 'student': return 'bg-green-500';
+      case 'employee': return 'bg-blue-500';
+      case 'support': return 'bg-green-500';
       default: return 'bg-gray-500';
     }
   };
@@ -339,7 +339,7 @@ export default function UsersPage() {
                   <TableCell>
                     <Badge className={`${getRoleBadgeColor(user.role)} px-2 py-1`}>
                       {user.role === 'admin' ? '👑 Admin' : 
-                       user.role === 'staff' ? '👤 Staff' : '👨‍🎓 Student'}
+                       user.role === 'support' ? '👤 Support' : '👨‍🎓 Employee'}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -439,8 +439,8 @@ export default function UsersPage() {
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="student">Student</SelectItem>
-                  <SelectItem value="staff">Staff</SelectItem>
+                  <SelectItem value="support">Support</SelectItem>
+                  <SelectItem value="employee">Employee</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
                 </SelectContent>
               </Select>
@@ -525,8 +525,8 @@ export default function UsersPage() {
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="student">Student</SelectItem>
-                  <SelectItem value="staff">Staff</SelectItem>
+                  <SelectItem value="support">Support</SelectItem>
+                  <SelectItem value="employee">Employee</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
                 </SelectContent>
               </Select>

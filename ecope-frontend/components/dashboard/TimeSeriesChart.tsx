@@ -1,81 +1,105 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { TimeTrends } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  AreaChart, 
-  Area, 
-  LineChart,
-  Line,
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend,
-  ResponsiveContainer
+  AreaChart, Area, LineChart, Line, BarChart, Bar, 
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
-import { Info } from 'lucide-react';
+import { Info, TrendingUp } from 'lucide-react';
+import { useMemo } from 'react';
 
 interface TimeSeriesChartProps {
   data: TimeTrends | null;
   loading: boolean;
 }
 
-// Colors for different categories
-const COLORS = [
-  '#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#a4de6c', 
-  '#d0ed57', '#83a6ed', '#8dd1e1', '#a4506c', '#9e67ab'
-];
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
+
+const formatLabel = (value: string) => {
+  if (typeof value !== 'string') return value;
+  return value.includes('.') ? value.split('.').pop() : value;
+};
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-border shadow-xl rounded-lg p-3 min-w-[160px]">
+        <p className="text-sm font-bold mb-2 text-slate-900 dark:text-slate-100 border-b pb-1">
+          {label}
+        </p>
+        <div className="space-y-1.5">
+          {payload.map((entry: any, index: number) => (
+            <div key={index} className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <div 
+                  className="w-2 h-2 rounded-full" 
+                  style={{ backgroundColor: entry.color || entry.fill }} 
+                />
+                <span className="text-xs font-medium text-muted-foreground">
+                  {formatLabel(entry.name)}:
+                </span>
+              </div>
+              <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                {entry.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function TimeSeriesChart({ data, loading }: TimeSeriesChartProps) {
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Time Trends</CardTitle>
-          <CardDescription>Loading time trends data...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-[400px] w-full" />
-        </CardContent>
-      </Card>
-    );
-  }
+  const { dailyData, monthlyData, maxCount, categories } = useMemo(() => {
+    if (!data) return { dailyData: [], monthlyData: [], maxCount: 0, categories: [] };
 
-  if (!data || (!data.daily_counts.dates.length && !data.monthly_by_category.length)) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Time Trends</CardTitle>
-          <CardDescription>No time trend data available</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-center items-center h-[300px]">
-            <p className="text-muted-foreground">No time series data available</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+    let currentMax = 0;
+    const cats = data.categories || [];
 
-  // Format daily counts data for charts
-  const dailyData = data.daily_counts.dates.map((date, index) => ({
-    date,
-    count: data.daily_counts.counts[index]
-  }));
+    const dData = (data.daily_counts?.dates || []).map((date, index) => {
+      const count = data.daily_counts.counts[index] || 0;
+      if (count > currentMax) currentMax = count;
+      return { date, count };
+    });
 
-  // Process the monthly data
-  const monthlyData = data.monthly_by_category;
+    const mData = (data.monthly_by_category || []).map(item => {
+      let rowTotal = 0;
+      cats.forEach(cat => {
+        rowTotal += (item[cat] as number) || 0;
+      });
+      if (rowTotal > currentMax) currentMax = rowTotal;
+      return item;
+    });
+
+    return { dailyData: dData, monthlyData: mData, maxCount: currentMax, categories: cats };
+  }, [data]);
+
+  const yAxisTicks = useMemo(() => {
+    const ticks = [];
+    const step = maxCount > 10 ? Math.ceil(maxCount / 10) : 1;
+    for (let i = 0; i <= maxCount + step; i += step) {
+      ticks.push(i);
+    }
+    return ticks;
+  }, [maxCount]);
+
+  if (loading) return <Skeleton className="h-[550px] w-full rounded-xl" />;
 
   return (
-    <Card>
+    <Card className="shadow-md border-border/50">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Complaint Trends Over Time</CardTitle>
-            <CardDescription>Visualizing how complaints change over time</CardDescription>
+          <div className="space-y-1">
+            <CardTitle className="text-xl font-bold flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              Trends & Analysis
+            </CardTitle>
+            <CardDescription>Comprehensive view of activity volume</CardDescription>
           </div>
           <div className="rounded-full bg-muted p-2">
             <Info className="h-4 w-4 text-muted-foreground" />
@@ -83,113 +107,74 @@ export default function TimeSeriesChart({ data, loading }: TimeSeriesChartProps)
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="monthly">
-          <TabsList className="mb-4 w-full max-w-[400px]">
-            <TabsTrigger value="monthly">Monthly Trends</TabsTrigger>
-            <TabsTrigger value="daily">Daily Trends</TabsTrigger>
+        <Tabs defaultValue="by-category" className="space-y-4">
+          <TabsList className="bg-muted/50">
+            <TabsTrigger value="monthly">Monthly</TabsTrigger>
+            <TabsTrigger value="daily">Daily</TabsTrigger>
             <TabsTrigger value="by-category">By Category</TabsTrigger>
           </TabsList>
           
-          {/* Monthly aggregated line chart */}
-          <TabsContent value="monthly" className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={monthlyData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="month" 
-                  angle={-45} 
-                  textAnchor="end" 
-                  height={70}
-                  interval={0}
-                />
-                <YAxis />
-                <Tooltip 
-                  formatter={(value) => [`${value} complaints`, 'Count']}
-                  labelFormatter={(label) => `Month: ${label}`}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey={(dataPoint) => {
-                    // Sum all category counts for this month
-                    let total = 0;
-                    data.categories.forEach(cat => {
-                      total += (dataPoint[cat] as number) || 0;
-                    });
-                    return total;
-                  }}
-                  stroke="#8884d8"
-                  fill="#8884d8"
-                  name="Total Complaints"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </TabsContent>
+          {/* Increased container height to 500px for a "Larger" look */}
+          <div className="h-[500px] w-full mt-6">
+            <TabsContent value="monthly" className="h-full m-0 outline-none">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={monthlyData} margin={{ top: 10, right: 20, left: -20, bottom: 60 }}>
+                  <defs>
+                    <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
+                  <XAxis dataKey="month" angle={-45} textAnchor="end" interval={0} height={80} tick={{ fontSize: 11 }} axisLine={false} />
+                  <YAxis ticks={yAxisTicks} allowDecimals={false} tick={{ fontSize: 12 }} axisLine={false} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#6366f1', strokeWidth: 1 }} />
+                  <Area type="monotone" dataKey={(d) => categories.reduce((acc, cat) => acc + (d[cat] as number || 0), 0)} stroke="#6366f1" fill="url(#colorCount)" strokeWidth={2.5} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </TabsContent>
 
-          {/* Daily line chart */}
-          <TabsContent value="daily" className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={dailyData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="date" 
-                  angle={-45} 
-                  textAnchor="end" 
-                  height={70}
-                  interval="preserveEnd"
-                  tick={{ fontSize: 10 }}
-                />
-                <YAxis />
-                <Tooltip 
-                  formatter={(value) => [`${value} complaints`, 'Count']}
-                  labelFormatter={(label) => `Date: ${label}`}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="count" 
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                  name="Daily Count"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </TabsContent>
-          
-          {/* Stacked bar chart by category */}
-          <TabsContent value="by-category" className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={monthlyData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="month" 
-                  angle={-45} 
-                  textAnchor="end" 
-                  height={70}
-                  interval={0}
-                />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                {data.categories.map((category, index) => (
-                  <Bar 
-                    key={category} 
-                    dataKey={category} 
-                    stackId="a" 
-                    fill={COLORS[index % COLORS.length]} 
-                    name={category}
-                  />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-          </TabsContent>
+            <TabsContent value="daily" className="h-full m-0 outline-none">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={dailyData} margin={{ top: 10, right: 20, left: -20, bottom: 60 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
+                  <XAxis dataKey="date" angle={-45} textAnchor="end" interval="preserveEnd" height={80} tick={{ fontSize: 10 }} axisLine={false} />
+                  <YAxis ticks={yAxisTicks} allowDecimals={false} tick={{ fontSize: 12 }} axisLine={false} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981', strokeWidth: 0 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </TabsContent>
+            
+            {/* --- LARGER BY CATEGORY CHART --- */}
+            <TabsContent value="by-category" className="h-full m-0 outline-none">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyData} margin={{ top: 10, right: 20, left: -20, bottom: 60 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                  <XAxis dataKey="month" angle={-45} textAnchor="end" interval={0} height={80} tick={{ fontSize: 12, fontWeight: 500 }} axisLine={false} />
+                  <YAxis ticks={yAxisTicks} allowDecimals={false} tick={{ fontSize: 12 }} axisLine={false} />
+                  
+                  {/* Tooltip background removed as requested */}
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
+                  
+                  <Legend verticalAlign="top" align="right" iconType="circle" formatter={formatLabel} wrapperStyle={{ paddingBottom: '30px' }} />
+                  
+                  {categories.map((cat, index) => (
+                    <Bar 
+                      key={cat} 
+                      dataKey={cat} 
+                      name={cat}
+                      stackId="a" 
+                      fill={COLORS[index % COLORS.length]} 
+                      // Increased barSize for a more substantial look
+                      barSize={60} 
+                      radius={index === categories.length - 1 ? [6, 6, 0, 0] : [0, 0, 0, 0]}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </TabsContent>
+          </div>
         </Tabs>
       </CardContent>
     </Card>

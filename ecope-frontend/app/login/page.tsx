@@ -53,11 +53,11 @@ export default function LoginPage() {
       );
       
       // We can identify the user type based on the email in this demo app
-      let role: UserRole = 'student';
+      let role: UserRole = 'employee';
       if (email.includes('admin')) {
         role = 'admin';
-      } else if (email.includes('staff')) {
-        role = 'staff';
+      } else if (email.includes('support')) {
+        role = 'support';
       }
       
       // Create a basic user object
@@ -96,7 +96,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background relative">
+    <div className="flex items-center justify-center h-screen bg-background relative overflow-hidden ">
       {/* Theme toggle button */}
       <ThemeToggleButton />
       
@@ -205,7 +205,7 @@ export default function LoginPage() {
             </CardContent>
             <CardFooter className="flex flex-col border-t pt-6">
               <p className="text-xs text-center text-muted-foreground">
-                This is a demo application. Use <span className="font-mono bg-muted px-1 py-0.5 rounded">admin@example.com / password123</span> to login as admin.</p>
+                This is a demo application. Use <span className="font-mono bg-muted px-1 py-0.5 rounded">admin@example.com / adminpassword</span> to login as admin.</p>
             </CardFooter>
           </Card>
         </div>

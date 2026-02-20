@@ -9,12 +9,12 @@ export default function HomePage() {
     {
       icon: <MessageSquare className="h-5 w-5" />,
       title: "AI Assistant",
-      description: "Natural conversations with data-driven insights to resolve student complaints efficiently."
+      description: "Natural conversations with data-driven insights to resolve Employee complaints efficiently."
     },
     {
       icon: <BarChart3 className="h-5 w-5" />,
       title: "Advanced Analytics",
-      description: "Visualize trends and patterns to make informed decisions about student concerns."
+      description: "Visualize trends and patterns to make informed decisions about Employee concerns."
     },
     {
       icon: <FileText className="h-5 w-5" />,
@@ -30,14 +30,14 @@ export default function HomePage() {
   
   const testimonials = [
     {
-      quote: "SCOPE has transformed how we process and respond to student complaints. Response times have decreased by 40%.",
+      quote: "SCOPE has transformed how we process and respond to Employee complaints. Response times have decreased by 40%.",
       author: "Dr. Sarah Johnson",
-      title: "Dean of Students, Pacific University"
+      title: "Dean of Employees, Pacific University"
     },
     {
       quote: "The AI-driven insights have helped us identify recurring issues and address them proactively before they escalate.",
       author: "Mark Williams",
-      title: "Student Affairs Director, Northside College"
+      title: "Employee Affairs Director, Northside College"
     },
     {
       quote: "Implementation was seamless, and our staff adapted quickly. The dashboards provide precisely the insights we need.",
@@ -67,15 +67,15 @@ export default function HomePage() {
             </div>
             
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight">
-              Student Complaints,
+              Employee Complaints,
               <span className="block mt-2 bg-gradient-to-r from-primary to-blue-600 dark:from-primary dark:to-blue-400 bg-clip-text text-transparent line-clamp-1.5">
                 Intelligently Managed
               </span>
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Streamline student complaint processes with AI-driven categorization, 
-              prioritization, and resolution tracking for educational institutions.
+              Streamline Employee complaint processes with AI-driven categorization, 
+              prioritization, and resolution tracking for educational Organization.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
@@ -101,7 +101,7 @@ export default function HomePage() {
             {/* Trusted by section */}
             <div className="pt-16 reveal">
               <p className="text-sm uppercase text-muted-foreground font-medium tracking-wider mb-6">
-                Trusted by educational institutions
+                Trusted by educational Organization
               </p>
               <div className="flex flex-wrap justify-center items-center gap-8 opacity-70">
                 <div className="font-bold text-xl">University of Tech</div>
@@ -125,7 +125,7 @@ export default function HomePage() {
             <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 text-primary text-sm font-medium mb-4">
               <span>Key Features</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold">Everything you need to manage student complaints</h2>
+            <h2 className="text-3xl md:text-4xl font-bold">Everything you need to manage Employee complaints</h2>
             <p className="text-xl text-muted-foreground mt-4">
               SCOPE combines powerful AI technology with a user-friendly interface to streamline 
               the entire complaint management process.
@@ -249,7 +249,7 @@ export default function HomePage() {
             </div>
             <div className="text-center p-6">
               <div className="text-4xl md:text-5xl font-bold mb-2 text-primary">50+</div>
-              <p className="text-muted-foreground">Institutions using SCOPE</p>
+              <p className="text-muted-foreground">Organization using SCOPE</p>
             </div>
           </div>
         </div>
@@ -262,7 +262,7 @@ export default function HomePage() {
             <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
               <span>Success Stories</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold">Trusted by leading educational institutions</h2>
+            <h2 className="text-3xl md:text-4xl font-bold">Trusted by leading educational Organization</h2>
             <p className="text-xl text-muted-foreground mt-4">
               See how SCOPE has transformed complaint management processes across different organizations.
             </p>
@@ -297,7 +297,7 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto text-center space-y-8 reveal">
             <h2 className="text-3xl md:text-4xl font-bold">Ready to transform your complaint management process?</h2>
             <p className="text-xl text-muted-foreground">
-              Join educational institutions already using SCOPE to improve student satisfaction and operational efficiency.
+              Join educational Organization already using SCOPE to improve Employee satisfaction and operational efficiency.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
@@ -329,8 +329,8 @@ export default function HomePage() {
                 <div className="font-bold text-2xl">SCOPE</div>
               </div>
               <p className="text-muted-foreground max-w-xs">
-                Student Complaint Organization & Prioritization Engine - 
-                Transforming how educational institutions manage student feedback.
+                Employee Complaint Organization & Prioritization Engine - 
+                Transforming how educational Organization manage Employee feedback.
               </p>
             </div>
             

@@ -1,189 +1,200 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { WordFrequency } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
+  ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
-import { useState } from 'react';
-import { CloudIcon } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { CloudIcon, MessageSquare } from 'lucide-react';
 
 interface WordFrequencyChartProps {
   data: WordFrequency[] | null;
   loading: boolean;
 }
 
-const COLORS = [
-  '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658',
-  '#a4de6c', '#d0ed57', '#83a6ed', '#8dd1e1', '#a4506c', '#9e67ab'
-];
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#14b8a6', '#f43f5e'];
+const formatLabel = (value: string) => {
+  if (typeof value !== 'string') return value;
+  return value.includes('.') ? value.split('.').pop() : value;
+};
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-border shadow-xl rounded-lg p-3 min-w-[160px]">
+        <p className="text-sm font-bold mb-2 text-slate-900 dark:text-slate-100 border-b pb-1">
+          {label}
+        </p>
+        <div className="space-y-1.5">
+          {payload.map((entry: any, index: number) => (
+            <div key={index} className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <div 
+                  className="w-2 h-2 rounded-full" 
+                  style={{ backgroundColor: entry.color || entry.fill }} 
+                />
+                <span className="text-xs font-medium text-muted-foreground">
+                  {formatLabel(entry.name)}:
+                </span>
+              </div>
+              <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                {entry.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function WordFrequencyChart({ data, loading }: WordFrequencyChartProps) {
   const [activeWordIndex, setActiveWordIndex] = useState<number | null>(null);
 
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Word Frequency</CardTitle>
-          <CardDescription>Loading word frequency data...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-[400px] w-full" />
-        </CardContent>
-      </Card>
-    );
-  }
+  // Memoized stats for Y-axis and Word Cloud sizing
+  const { sortedData, minCount, maxCount, range } = useMemo(() => {
+    if (!data || data.length === 0) return { sortedData: [], minCount: 0, maxCount: 0, range: 0 };
+    
+    const sorted = [...data].sort((a, b) => b.count - a.count);
+    const min = Math.min(...data.map(d => d.count));
+    const max = Math.max(...data.map(d => d.count));
+    
+    return { sortedData: sorted, minCount: min, maxCount: max, range: max - min || 1 };
+  }, [data]);
+
+  const yAxisTicks = useMemo(() => {
+    const ticks = [];
+    const step = maxCount > 10 ? Math.ceil(maxCount / 10) : 1;
+    for (let i = 0; i <= maxCount + step; i += step) ticks.push(i);
+    return ticks;
+  }, [maxCount]);
+
+  if (loading) return <Skeleton className="h-[500px] w-full rounded-xl" />;
 
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Word Frequency</CardTitle>
-          <CardDescription>Most common words in complaints</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-center items-center h-[300px]">
-            <p className="text-muted-foreground">No word frequency data available</p>
-          </div>
+      <Card className="border-none shadow-md">
+        <CardContent className="flex items-center justify-center h-[300px]">
+          <p className="text-muted-foreground italic">No keywords extracted yet.</p>
         </CardContent>
       </Card>
     );
   }
 
-  // Sort data by count for bar chart
-  const sortedData = [...data].sort((a, b) => b.count - a.count);
-
-  const handleWordMouseOver = (index: number) => {
-    setActiveWordIndex(index);
-  };
-
-  const handleWordMouseLeave = () => {
-    setActiveWordIndex(null);
-  };
-  
-  // Create a word cloud-like visualization
-  const maxCount = Math.max(...data.map(d => d.count));
-  const minCount = Math.min(...data.map(d => d.count));
-  const range = maxCount - minCount;
-
   return (
-    <Card>
-      <CardHeader>
+    <Card className="shadow-md border-border/50">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Word Frequency Analysis</CardTitle>
-            <CardDescription>Most common words in complaint texts</CardDescription>
+          <div className="space-y-1">
+            <CardTitle className="text-xl font-bold flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 text-primary" />
+              Keyword Analysis
+            </CardTitle>
+            <CardDescription>Most recurring themes found in text data</CardDescription>
           </div>
-          <div className="rounded-full bg-muted p-2">
-            <CloudIcon className="h-4 w-4 text-muted-foreground" />
+          <div className="rounded-full bg-primary/10 p-2">
+            <CloudIcon className="h-4 w-4 text-primary" />
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="bar">
-          <TabsList className="mb-4 w-full max-w-[400px]">
-            <TabsTrigger value="bar">Bar Chart</TabsTrigger>
-            <TabsTrigger value="pie">Pie Chart</TabsTrigger>
+        <Tabs defaultValue="bar" className="space-y-4">
+          <TabsList className="bg-muted/50 p-1">
+            <TabsTrigger value="bar">Bar Analysis</TabsTrigger>
+            <TabsTrigger value="pie">Distribution</TabsTrigger>
             <TabsTrigger value="cloud">Word Cloud</TabsTrigger>
           </TabsList>
           
-          {/* Bar Chart View */}
-          <TabsContent value="bar" className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={sortedData.slice(0, 15)}
-                margin={{ top: 20, right: 30, left: 20, bottom: 70 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="word" 
-                  angle={-45} 
-                  textAnchor="end" 
-                  height={70}
-                  interval={0} 
-                />
-                <YAxis />
-                <Tooltip 
-                  formatter={(value) => [`${value} occurrences`, 'Frequency']}
-                  labelFormatter={(label) => `Word: ${label}`}
-                />
-                <Bar dataKey="count" name="Frequency">
-                  {sortedData.slice(0, 15).map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={COLORS[index % COLORS.length]} 
-                      opacity={activeWordIndex === null || activeWordIndex === index ? 1 : 0.3}
-                      onMouseOver={() => handleWordMouseOver(index)}
-                      onMouseLeave={handleWordMouseLeave}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </TabsContent>
-          
-          {/* Pie Chart View */}
-          <TabsContent value="pie" className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Tooltip formatter={(value) => [`${value} occurrences`, 'Frequency']} />
-                <Pie
-                  data={sortedData.slice(0, 10)}
-                  dataKey="count"
-                  nameKey="word"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={120}
-                  label={({ word, count, percent }) => 
-                    `${word} (${count}, ${(percent * 100).toFixed(1)}%)`
-                  }
-                  labelLine={false}
+          <div className="h-[400px] w-full mt-6">
+            {/* --- Bar Chart View --- */}
+            <TabsContent value="bar" className="h-full m-0 outline-none">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={sortedData.slice(0, 15)}
+                  margin={{ top: 10, right: 20, left: -25, bottom: 60 }}
                 >
-                  {sortedData.slice(0, 10).map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={COLORS[index % COLORS.length]} 
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </TabsContent>
-          
-          {/* Word Cloud View */}
-          <TabsContent value="cloud">
-            <div className="flex flex-wrap justify-center gap-3 p-6 h-[400px] overflow-auto">
-              {sortedData.slice(0, 30).map((word, index) => {
-                // Calculate size based on frequency
-                const sizeRatio = (word.count - minCount) / range;
-                const fontSize = 0.8 + sizeRatio * 1.5; // Font size between 0.8rem and 2.3rem
-                
-                return (
-                  <div
-                    key={index}
-                    className="px-3 py-1 bg-gray-100 rounded-full hover:bg-gray-200 transition-all"
-                    style={{ 
-                      fontSize: `${fontSize}rem`,
-                      opacity: 0.7 + sizeRatio * 0.3,
-                      color: COLORS[index % COLORS.length]
-                    }}
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
+                  <XAxis 
+                    dataKey="word" 
+                    angle={-45} 
+                    textAnchor="end" 
+                    height={80}
+                    interval={0} 
+                    tick={{ fontSize: 11, fontWeight: 500 }}
+                    axisLine={false}
+                  />
+                  <YAxis ticks={yAxisTicks} allowDecimals={false} tick={{ fontSize: 12 }} axisLine={false} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)', radius: 4 }} />
+                  <Bar dataKey="count" radius={[4, 4, 0, 0]} barSize={40}>
+                    {sortedData.slice(0, 15).map((entry, index) => (
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={COLORS[index % COLORS.length]} 
+                        opacity={activeWordIndex === null || activeWordIndex === index ? 1 : 0.3}
+                        onMouseEnter={() => setActiveWordIndex(index)}
+                        onMouseLeave={() => setActiveWordIndex(null)}
+                        className="transition-all duration-300"
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </TabsContent>
+            
+            {/* --- Pie Chart View --- */}
+            <TabsContent value="pie" className="h-full m-0 outline-none">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Tooltip content={<CustomTooltip />} />
+                  <Pie
+                    data={sortedData.slice(0, 10)}
+                    dataKey="count"
+                    nameKey="word"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={80}
+                    outerRadius={130}
+                    paddingAngle={5}
+                    label={({ word, percent }) => `${word} (${(percent * 100).toFixed(0)}%)`}
                   >
-                    {word.word}
-                  </div>
-                );
-              })}
-            </div>
-          </TabsContent>
+                    {sortedData.slice(0, 10).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} strokeWidth={0} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </TabsContent>
+            
+            {/* --- Word Cloud View --- */}
+            <TabsContent value="cloud" className="h-full m-0 outline-none overflow-auto">
+              <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-4 p-8 min-h-full">
+                {sortedData.slice(0, 30).map((item, index) => {
+                  const sizeRatio = (item.count - minCount) / range;
+                  const fontSize = 0.9 + sizeRatio * 1.8; // 0.9rem to 2.7rem
+                  
+                  return (
+                    <div
+                      key={index}
+                      className="cursor-default select-none transition-all duration-300 hover:scale-125 hover:rotate-2 filter drop-shadow-sm"
+                      style={{ 
+                        fontSize: `${fontSize}rem`,
+                        fontWeight: item.count > (maxCount * 0.7) ? '800' : '600',
+                        color: COLORS[index % COLORS.length],
+                        opacity: 0.6 + (sizeRatio * 0.4)
+                      }}
+                      title={`${item.count} mentions`}
+                    >
+                      {item.word}
+                    </div>
+                  );
+                })}
+              </div>
+            </TabsContent>
+          </div>
         </Tabs>
       </CardContent>
     </Card>
