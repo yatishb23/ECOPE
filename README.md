@@ -14,7 +14,7 @@
 
 </div>
 
-![SCOPE - Student Complaint Optimisation & Prioritisation Engine](./scope-frontend/public/banner.png)
+![SCOPE - Student Complaint Optimisation & Prioritisation Engine](./ecope-frontend/public/banner.png)
 
 <p align="center">
   <b>SCOPE</b> is an intelligent system designed to streamline the handling of student complaints within educational institutions. It automatically classifies incoming complaints by <b>category</b> and <b>urgency</b>, enabling staff to prioritize and address critical issues efficiently.
@@ -41,39 +41,39 @@
 <br>
 
 **🏠 Landing Page**
-![Landing Page](./scope-frontend/public/screenshots/landing.png)
+![Landing Page](./ecope-frontend/public/screenshots/landing.png)
 *Welcome to SCOPE - Your intelligent complaint management system*
 
 <br>
 
 **🎯 Features Overview**
-![Features Overview](./scope-frontend/public/screenshots/features.png)
+![Features Overview](./ecope-frontend/public/screenshots/features.png)
 *Comprehensive feature set for efficient complaint handling*
 
 <br>
 
 **📊 Analytics Dashboard**
-![Analytics Dashboard](./scope-frontend/public/screenshots/analytics-dash.png)
+![Analytics Dashboard](./ecope-frontend/public/screenshots/analytics-dash.png)
 *Real-time insights and data visualization for informed decision-making*
 
 <br>
 
 **🧠 AI-Powered Classification & Prioritization**
-![Complaint Classification & Prioritization](./scope-frontend/public/screenshots/complaint-classification-prioritization.png)
+![Complaint Classification & Prioritization](./ecope-frontend/public/screenshots/complaint-classification-prioritization.png)
 *Automated complaint categorization and urgency assessment*
 
 <br>
 
 **👥 User Management System**
-![User Management](./scope-frontend/public/screenshots/user-management.png)
+![User Management](./ecope-frontend/public/screenshots/user-management.png)
 *Role-based access control and user administration*
 
 <br>
 
 **🤖 AI Chatbot Assistant**
-![Chatbot Features](./scope-frontend/public/screenshots/chatbot-features.png)
+![Chatbot Features](./ecope-frontend/public/screenshots/chatbot-features.png)
 *Advanced RAG-based features for complaint data analysis*
-![Chatbot Demo](./scope-frontend/public/screenshots/chatbot-demo.png)
+![Chatbot Demo](./ecope-frontend/public/screenshots/chatbot-demo.png)
 *Interactive AI assistant powered by Google Gemini and LangChain*
 <br>
 
@@ -126,10 +126,11 @@ Follow these steps to set up and run the SCOPE project locally.
 **1. Clone the Repository:**
 ```bash
 git clone https://github.com/tejas242/SCOPE.git
+cd SCOPE
 ```
 
 #### 1.1 Get the model.pt
-Use the jupyter-notebook at `notebooks/Model_SCOPE.ipynb` and the dataset in `data/complaints.csv` to train the model and download and store it in the `model/model.pt` file.
+Use the jupyter-notebook at `ecope-backend/notebooks/Model_SCOPE.ipynb` and the dataset in `ecope-backend/data/complaints.csv` to train the model and download and store it in the `ecope-backend/app/ml/model.pt` file.
 
 The model is too large to upload to github repo.
 
@@ -139,7 +140,7 @@ The model is too large to upload to github repo.
 
 ```bash
 # Navigate to the backend directory
-cd scope-backend
+cd ecope-backend
 
 # Create a Python virtual environment
 python -m venv venv
@@ -164,7 +165,7 @@ cp .env.example .env
 
 # Seed the database with initial data (optional but recommended)
 # This creates default users and sample complaints
-python ../scripts/seed_data.py ../data/complaints-small.csv # Use complaints.csv for more data
+python scripts/seed_data.py data/complaints-small.csv # Use complaints.csv for more data
 
 # Start the backend server
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
@@ -177,7 +178,7 @@ The backend API will be running at `http://localhost:8000`. You can access the i
 ```bash
 # Open a NEW terminal window/tab
 # Navigate to the frontend directory from the project root
-cd scope-frontend
+cd ecope-frontend
 
 # Install frontend dependencies
 npm install
@@ -213,8 +214,8 @@ Open your web browser and navigate to `http://localhost:3000`. You can log in us
 
 Configuration is managed via environment variables. Example files are provided:
 
-*   `scope-backend/.env.example`: Contains settings for the FastAPI backend (database URL, JWT secret, Google API key, etc.). Copy this to `.env` and fill in your values.
-*   `scope-frontend/.env.local.example`: Contains settings for the Next.js frontend (primarily the backend API URL). Copy this to `.env.local` and adjust if necessary.
+*   `ecope-backend/.env.example`: Contains settings for the FastAPI backend (database URL, JWT secret, Google API key, etc.). Copy this to `.env` and fill in your values.
+*   `ecope-frontend/.env.local.example`: Contains settings for the Next.js frontend (primarily the backend API URL). Copy this to `.env.local` and adjust if necessary.
 
 **Crucially, the actual `.env` and `.env.local` files should NOT be committed to version control.** They are included in the `.gitignore` file.
 
@@ -246,4 +247,4 @@ Contributions are welcome! Please follow standard Gitflow practices. (Add more d
 
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENCE](LICENCE) file for details.
